@@ -1,0 +1,10 @@
+mcp[cli]
+openai
+ipykernel
+httpx
+python-dotenv
+azure-core
+azure-search-documents
+starlette
+uvicorn
+semantic-kernel
