@@ -10,11 +10,6 @@ Features:
 - SSE transport for real-time communication
 - Starlette web framework for HTTP handling
 
-Inspiration:
-- Youtube: https://youtu.be/5xqFjh56AwM?si=4eD_b8bTspLBIuQj
-- GitHub crash course: https://github.com/daveebbelaar/ai-cookbook/tree/main/mcp/crash-course
-- Azure modifications: https://github.com/Azure-Samples/AI-Gateway/tree/main
-
 Technical Note: SSE is deprecated in favor of streamable-http, but OpenAI SDK 
 hasn't updated yet, so we use Starlette to handle SSE requests.
 
@@ -101,7 +96,8 @@ def ai_search(query: str) -> str:
     search_endpoint = os.getenv("AZURE_SEARCH_ENDPOINT")        
     search_key = os.getenv("AZURE_SEARCH_KEY")                  
     search_index = os.getenv("AZURE_SEARCH_INDEX") 
-    search_vector_field_name = os.getenv("AZURE_SEARCH_VECTOR_FIELD_NAME")             
+    search_vector_field_name = os.getenv("AZURE_SEARCH_VECTOR_FIELD_NAME")    
+    search_content_field_name = os.getenv("AZURE_SEARCH_CONTENT_FIELD_NAME")         
     azure_endpoint = os.getenv('AZURE_OPENAI_ENDPOINT')         
     azure_openai_api_key = os.getenv('AZURE_OPENAI_KEY')        
     azure_openai_api_version = os.getenv('AZURE_OPENAI_VERSION') 
@@ -132,7 +128,7 @@ def ai_search(query: str) -> str:
     vector_query = VectorizedQuery(
         vector=query_vector, 
         k_nearest_neighbors=5,        
-        fields='text_vector',         
+        fields=search_vector_field_name,         
         exhaustive=True               
     )
     
@@ -159,7 +155,7 @@ def ai_search(query: str) -> str:
         # Only include results with good reranker scores (>=1.5)
         if reranker_score >= 1.5:
             i += 1 
-            content = result.get(search_vector_field_name, '')           
+            content = result.get(search_content_field_name, '')           
             score = result.get('@search.score', 'N/A') 
             
             # Format the result in a readable way

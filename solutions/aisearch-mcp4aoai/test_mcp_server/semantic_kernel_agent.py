@@ -7,9 +7,8 @@ The script sets up an AI agent using Azure OpenAI and MCP SSE Plugin to respond 
 It demonstrates how to create an agent, sync with your MCP cilent, invoke it for a response, and clean up the session.
 
 **Make sure to replace**:
-- 'your_deployed_model_name' with the name of your deployed model on line 33.
-- 'Please place search query here relevant to the Azure AI Search Index>' with a relevant query to your Azure AI Search Index 
-    on line 24
+- Line 37 with the name of your deployed model
+- Line 24 with a relevant query to your Azure AI Search Index 
 
 '''
 
@@ -26,10 +25,10 @@ user_input = "<Please place search query here relevant to the Azure AI Search In
 async def main():
     # 1. Create the agent
     async with MCPSsePlugin(
-        name="Weather",
-        url=f"http://127.0.0.1:8080/sse",
+        name="AzureAiSearch",
+        url=f"http://0.0.0.0:8080/sse",
         description="Azure AI Search Plugin",
-    ) as weather_plugin:
+    ) as aisearch_plugin:
         agent = ChatCompletionAgent(
             service=AzureChatCompletion(
                 endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
@@ -39,7 +38,7 @@ async def main():
             ),
             name="MCPAgent",
             instructions="Answer questions using the tools provided.",
-            plugins=[weather_plugin],
+            plugins=[aisearch_plugin],
         )
 
         thread: ChatHistoryAgentThread | None = None

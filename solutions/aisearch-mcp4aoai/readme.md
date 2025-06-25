@@ -69,7 +69,7 @@ az containerapp update \
 
 ## Environment Variables
 
-Copy and fill in [`docker_env/.env_example`](docker_env/.env_example) as `.env` for local development or set these as application settings in Azure.
+Copy and fill in [`ex_env_file`](ex_env_file) as `.env` for local development or set these as application settings in Azure.
 
 Key variables include:
 - `AZURE_SEARCH_ENDPOINT`
@@ -85,24 +85,32 @@ Key variables include:
 
 ## Running Locally
 
-1. Install dependencies using [uv](https://github.com/astral-sh/uv) (recommended for speed and reliability):
+You can use [uv](https://github.com/astral-sh/uv) as a fast, reliable drop-in replacement for `pip` and `python` commands below.
+
+1. **Install dependencies** (recommended: use `uv`):
 
    ```sh
    uv pip install -r requirements.txt
+   # or, with pip:
+   pip install -r requirements.txt
    ```
 
-2. Set up your `.env` file.
+2. **Set up your `.env` file** (copy from `.env_example` and fill in values).
 
-3. Start the server (for example, with SSE support):
+3. **Start the server** (for example, with SSE support):
 
    ```sh
    uv python server_sse.py
+   # or, with python:
+   python server_sse.py
    ```
 
-4. Run test scripts (in another terminal):
+4. **Run test scripts** (in another terminal):
 
    ```sh
    uv python test_mcp_server/openai_sdk.py
+   # or, with python:
+   python test_mcp_server/openai_sdk.py
    ```
 
 ---

@@ -1,11 +1,20 @@
 '''
-Inspiration:
-Youtube: https://youtu.be/5xqFjh56AwM?si=4eD_b8bTspLBIuQj
-GitHub: 
-- Crash course: https://github.com/daveebbelaar/ai-cookbook/tree/main/mcp/crash-course
+MCP (Model Context Protocol) Server with Streamable-HTTP Support
 
-Note: SSE has been deprecated in favor of streamable-http. This one uses FastMCP with streamable-http transport and the route would look like
-/mcp/stream instead of /sse. 
+This server provides tools to Large Language Models through the MCP protocol.
+It uses streamable-http for real-time communication, which is NOT compatible with OpenAI's SDK to date.
+
+Features:
+- Simple calculator tool (add function)
+- Azure AI Search integration for retrieving documents
+- SSE transport for real-time communication
+- Starlette web framework for HTTP handling
+
+**COMMAND TO BUILD AND PUSH DOCKER IMAGE TO ACR:
+az acr build --registry <your-acr-name> --image <your-image-name>:<tag> .
+
+**COMMAND TO UPDATE THE CONTAINER APP TO USE THE NEW IMAGE:
+az containerapp update --name <your-container-app-name> --resource-group <your-resource-group> --image <your-acr-name>.azurecr.io/<your-image-name>:<tag>
 
 '''
 
@@ -49,6 +58,8 @@ def ai_search(query: str) -> str:
     search_endpoint = os.getenv("AZURE_SEARCH_ENDPOINT")
     search_key = os.getenv("AZURE_SEARCH_KEY")
     search_index = os.getenv("AZURE_SEARCH_INDEX")
+    search_vector_field_name = os.getenv("AZURE_SEARCH_VECTOR_FIELD_NAME")    
+    search_content_field_name = os.getenv("AZURE_SEARCH_CONTENT_FIELD_NAME")    
     azure_endpoint = os.getenv('AZURE_OPENAI_ENDPOINT')  
     azure_openai_api_key = os.getenv('AZURE_OPENAI_KEY')  
     azure_openai_api_version = os.getenv('AZURE_OPENAI_VERSION')  
@@ -69,7 +80,7 @@ def ai_search(query: str) -> str:
     search_client = SearchClient(endpoint=search_endpoint,  
                                 index_name=search_index,  
                                 credential=AzureKeyCredential(search_key))  
-    vector_query = VectorizedQuery(vector=query_vector, k_nearest_neighbors=5, fields='text_vector', exhaustive=True)
+    vector_query = VectorizedQuery(vector=query_vector, k_nearest_neighbors=5, fields=search_vector_field_name, exhaustive=True)
     # Query the index  
     results = search_client.search(
         search_text=None,
@@ -90,7 +101,7 @@ def ai_search(query: str) -> str:
         reranker_score = result.get('@search.reranker_score', 0)  # Default to 0 if not present
         if reranker_score >= 1.5:  # Filter by reranker score
             i += 1 
-            content = result.get('chunk', '')
+            content = result.get(search_content_field_name, '')
             score = result.get('@search.score', 'N/A')
             final_output += (
                 f"Source {i}\n"
@@ -107,7 +118,7 @@ def ai_search(query: str) -> str:
 
 # Run the server
 if __name__ == "__main__":
-    transport = "streamable-http"  # Change to "sse" to use SSE transport
+    transport = "streamable-http"  
     if transport == "stdio":
         print("Running server with stdio transport")
         mcp.run(transport="stdio")

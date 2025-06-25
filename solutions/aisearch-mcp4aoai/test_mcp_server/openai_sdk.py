@@ -6,9 +6,8 @@ The script connects to an MCP tool server, lists available tools, and uses Azure
 It then calls the appropriate tools and completes the response using the tool outputs.
 
 **Make sure to replace**:
-- 'your_deployed_model_name' with the name of your deployed model on lines 62 & 98
-- 'Please place search query here relevant to the Azure AI Search Index>' with a relevant query to your Azure AI Search Index 
-    on line 121 
+- Lines 64 & 100 with the name of your deployed model
+- Line 122 with a relevant query to your Azure AI Search Index 
 
 '''
 import json
@@ -98,7 +97,7 @@ async def run_completion_with_tools(server_url, prompt):
             # Step 3: Let the model finish the response
             print("▶️ Step 3: finish with a completion to answer the user prompt using the function response")
             second_response = client.chat.completions.create(
-                model="your_deployed_model_name",
+                model="your_deployed_model_name",  # USE your deployment name here
                 messages=messages,
                 store=True,
                 metadata={
@@ -119,4 +118,4 @@ async def run_completion_with_tools(server_url, prompt):
             await streams_ctx.__aexit__(None, None, None)
 
 # Run the workflow
-asyncio.run(run_completion_with_tools("127.0.0.1:8080", "<Please place search query here relevant to the Azure AI Search Index>"))
+asyncio.run(run_completion_with_tools("http://0.0.0.0:8080/sse", "<Please place search query here relevant to the Azure AI Search Index>"))
