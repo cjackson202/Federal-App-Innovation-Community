@@ -23,7 +23,7 @@ This project demonstrates how to expose custom tools as MCP servers to Large Lan
 - [`test_mcp_server/semantic_kernel_agent.py`](test_mcp_server/semantic_kernel_agent.py): Example of using Semantic Kernel with MCP plugins.
 - [`requirements.txt`](requirements.txt): Python dependencies for the MCP server and test scripts.
 - [`Dockerfile`](Dockerfile): Container definition for deployment.
-- [`docker_env/.env_example`](docker_env/.env_example): Example environment variables for local or container deployment.
+- [`ex_env_file`](ex_env_file): Example environment variables for local or container deployment.
 
 ---
 

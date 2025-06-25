@@ -60,6 +60,7 @@ def ai_search(query: str) -> str:
     search_index = os.getenv("AZURE_SEARCH_INDEX")
     search_vector_field_name = os.getenv("AZURE_SEARCH_VECTOR_FIELD_NAME")    
     search_content_field_name = os.getenv("AZURE_SEARCH_CONTENT_FIELD_NAME")    
+    search_semantic_configuration_name = os.getenv("AZURE_SEARCH_SEMANTIC_CONFIGURATION_NAME")`
     azure_endpoint = os.getenv('AZURE_OPENAI_ENDPOINT')  
     azure_openai_api_key = os.getenv('AZURE_OPENAI_KEY')  
     azure_openai_api_version = os.getenv('AZURE_OPENAI_VERSION')  
@@ -89,7 +90,7 @@ def ai_search(query: str) -> str:
         select="*",
         semantic_query=query,
         query_type="semantic",
-        semantic_configuration_name="itsupportindex-semantic-configuration",  # Ensure this matches your index configuration
+        semantic_configuration_name=search_semantic_configuration_name,  # Ensure this matches your index configuration
         # query_language="en-us",
         query_answer="extractive|count-5",
         query_caption="extractive|highlight-false",
